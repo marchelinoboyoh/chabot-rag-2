@@ -6,3 +6,4 @@ openai
 python-docx
 faiss-cpu
 uvicorn
+Jinja2
