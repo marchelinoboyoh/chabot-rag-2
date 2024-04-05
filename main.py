@@ -72,7 +72,7 @@ async def get_response(user_input: str = Form(...)):
         chunks = text_splitter.split_text(text)
 
         # Accessing environment variable
-        openai_api_key = os.environ.get("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")
+        openai_api_key = os.environ.get("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")
 
         embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
         knowledge_base = FAISS.from_texts(chunks, embeddings)
