@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Chat with Assistant</h1>
+        <div id="chat-history">
+            {% for message in chat_history %}
+            <div class="message">
+                <strong>User:</strong> {{ message.user }}
+            </div>
+            <div class="message">
+                <strong>Assistant:</strong> {{ message.assistant }}
+            </div>
+            {% endfor %}
+        </div>
+        <form id="chat-form" onsubmit="sendMessage(event)">
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+    <script>
+        async function sendMessage(event) {
+            event.preventDefault(); // Prevent the default form submission behavior
+    
+            // Get the user input
+            const userInput = document.getElementById('user-input').value.trim();
+    
+            if (userInput === '') return; // Do not send empty messages
+    
+            // Clear the input field
+            document.getElementById('user-input').value = '';
+    
+            // Update the chat history with the user's message
+            const chatHistory = document.getElementById('chat-history');
+            const userMessage = document.createElement('div');
+            userMessage.classList.add('message');
+            userMessage.innerHTML = `<strong>You:</strong> ${userInput}`;
+            chatHistory.appendChild(userMessage);
+    
+            // Scroll to the bottom of the chat history
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+    
+            // Make an AJAX request to the server
+            const response = await fetch('/get_response', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'user_input': userInput
+                }),
+            });
+    
+            // Get the response from the server
+            const responseData = await response.json();
+    
+            // Update the chat history with the bot's response
+            const assistantMessage = document.createElement('div');
+            assistantMessage.classList.add('message');
+            assistantMessage.innerHTML = `<strong>Assistant:</strong> ${responseData}`;
+            chatHistory.appendChild(assistantMessage);
+    
+            // Scroll to the bottom of the chat history again to show the bot's response
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+    </script>
+</body>
+
+</html>
