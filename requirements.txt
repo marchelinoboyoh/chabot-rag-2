@@ -7,3 +7,4 @@ python-docx
 faiss-cpu
 uvicorn
 Jinja2
+python-multipart
